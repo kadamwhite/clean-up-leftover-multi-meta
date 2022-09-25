@@ -1,0 +1,19 @@
+{
+    "name": "humanmade/hm-playbook-dev",
+    "description": "Remove duplicate meta values for any single meta key with multiple meta value rows in the database.",
+    "type": "wordpress-plugin",
+    "version": "0.1.0",
+    "require-dev": {
+        "humanmade/coding-standards": "^1.2.1"
+    },
+	"scripts": {
+        "phpcbf": "phpcbf . ",
+        "lint": "phpcs ."
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

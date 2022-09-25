@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ruleset name="hm-playbook">
+	<description>PHPCS rules for Meta Cleanup plugin</description>
+
+	<config name="php_version" value="80000" />
+
+	<!-- Use HM Coding Standards -->
+	<rule ref="vendor/humanmade/coding-standards">
+		<!-- Ignore directory naming rules that turn namespace Foo_Bar into directory foo_bar. -->
+		<exclude name="HM.Files.NamespaceDirectoryName" />
+	</rule>
+
+	<arg name="extensions" value="php" />
+
+	<!-- Ignored files & directories -->
+	<exclude-pattern>/build/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<exclude-pattern>/vendor/*</exclude-pattern>
+</ruleset>
