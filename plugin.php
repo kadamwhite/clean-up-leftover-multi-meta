@@ -7,7 +7,7 @@
 
 namespace CleanUPLeftoverMultiMeta;
 
-/* phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols */
+/* phpcs:disable PSR1.Files.SideEffects */
 
 require_once __DIR__ . '//inc/cli/trait-alley-cli-bulk-task.php';
 require_once __DIR__ . '//inc/cli/clean-up-leftover-multi-meta.php';
