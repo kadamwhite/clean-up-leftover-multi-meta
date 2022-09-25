@@ -1,6 +1,7 @@
 {
-    "name": "humanmade/hm-playbook-dev",
+    "name": "humanmade/clean-up-leftover-multi-meta",
     "description": "Remove duplicate meta values for any single meta key with multiple meta value rows in the database.",
+    "license": "GPL-2.0-or-later",
     "type": "wordpress-plugin",
     "version": "0.1.0",
     "require-dev": {

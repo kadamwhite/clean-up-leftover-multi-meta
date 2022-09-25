@@ -6,6 +6,8 @@
 
 	<!-- Use HM Coding Standards -->
 	<rule ref="vendor/humanmade/coding-standards">
+		<!-- Don't restrict namespaced functions to `namespace.php` -->
+		<exclude name="HM.Files.FunctionFileName.WrongFile" />
 		<!-- Ignore directory naming rules that turn namespace Foo_Bar into directory foo_bar. -->
 		<exclude name="HM.Files.NamespaceDirectoryName" />
 	</rule>
