@@ -18,3 +18,9 @@ Our working theory is that this happens when a meta key is registered (using `re
 This plugin provides a CLI command which can be used to iterate through all posts of a post type, check for registered meta for that post, and identify whether any `single`-registered meta keys have duplicated rows in the postmeta table. The duplicated meta IDs are then cleaned out.
 
 If a meta key has multiple rows for a post with _different_ values, we should leave those alone.
+
+Example command:
+
+```
+wp clean-up-leftover-multi-meta --post-type=my-cpt-name --dry-run
+```
