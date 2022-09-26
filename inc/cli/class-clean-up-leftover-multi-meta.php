@@ -50,10 +50,12 @@ class Clean_Up_Leftover_Multi_Meta extends WP_CLI_Command {
 			WP_CLI::log( "Registered meta keys for $post_type: " . print_r( array_keys( $registered_meta ), true ) );
 		}
 
+		$query_args = [
+			'post_type'   => $post_type,
+		];
+
 		$this->bulk_task(
-			[
-				'post_type'   => $post_type,
-			],
+			$query_args,
 			function( WP_Post $post ) use ( $registered_meta, $post_type, $dry_run, $verbose ) {
 				global $wpdb;
 
@@ -64,6 +66,9 @@ class Clean_Up_Leftover_Multi_Meta extends WP_CLI_Command {
 					if ( ( $meta_registration['single'] ?? true ) === false ) {
 						continue;
 					}
+					if ( ( $meta_registration['show_in_rest'] ?? true ) === false ) {
+						continue;
+					}
 					$extant_meta = $wpdb->get_results(
 						$wpdb->prepare(
 							'select meta_id,meta_value,meta_key from wp_postmeta where meta_key=%s',
@@ -72,6 +77,10 @@ class Clean_Up_Leftover_Multi_Meta extends WP_CLI_Command {
 					);
 					if ( count( $extant_meta ) <= 1 ) {
 						continue;
+					}
+					if ( $verbose ) {
+						// phpcs:ignore
+						WP_CLI::log( print_r( $extant_meta, true ) );
 					}
 					foreach ( array_slice( $extant_meta, 1 ) as $idx => $meta ) {
 						if ( $meta->meta_value === $extant_meta[0]->meta_value ) {
