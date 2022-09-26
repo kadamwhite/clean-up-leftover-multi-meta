@@ -60,14 +60,14 @@ class Clean_Up_Leftover_Multi_Meta extends WP_CLI_Command {
 				global $wpdb;
 
 				foreach ( $registered_meta as $meta_key => $meta_registration ) {
-					if ( $verbose ) {
-						WP_CLI::log( "Processing $post_type id {$post->ID} $meta_key" );
-					}
 					if ( ( $meta_registration['single'] ?? true ) === false ) {
 						continue;
 					}
 					if ( ( $meta_registration['show_in_rest'] ?? true ) === false ) {
 						continue;
+					}
+					if ( $verbose ) {
+						WP_CLI::log( "Processing $post_type id {$post->ID} $meta_key" );
 					}
 					$extant_meta = $wpdb->get_results(
 						$wpdb->prepare(
