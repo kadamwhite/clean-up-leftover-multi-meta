@@ -7,6 +7,7 @@ namespace CleanUPLeftoverMultiMeta\CLI;
 
 use Alley_CLI_Bulk_Task;
 use WP_CLI;
+use WP_CLI\Utils;
 use WP_CLI_Command;
 use WP_Post;
 
@@ -66,9 +67,6 @@ class Clean_Up_Leftover_Multi_Meta extends WP_CLI_Command {
 					if ( ( $meta_registration['show_in_rest'] ?? true ) === false ) {
 						continue;
 					}
-					if ( $verbose ) {
-						WP_CLI::log( "Processing $post_type id {$post->ID} $meta_key" );
-					}
 					$extant_meta = $wpdb->get_results(
 						$wpdb->prepare(
 							'select meta_id,meta_value,meta_key from wp_postmeta where meta_key=%s and post_id=%d',
@@ -80,19 +78,14 @@ class Clean_Up_Leftover_Multi_Meta extends WP_CLI_Command {
 						continue;
 					}
 					if ( $verbose ) {
+						WP_CLI::log( "Processing $post_type id {$post->ID} $meta_key" );
+					}
+					if ( $verbose ) {
 						// phpcs:ignore
-						WP_CLI::log( print_r( $extant_meta, true ) );
+						Utils\format_items( 'table', $extant_meta, 'meta_id,meta_value,meta_key' );
 					}
 					foreach ( array_slice( $extant_meta, 1 ) as $idx => $meta ) {
 						if ( $meta->meta_value === $extant_meta[0]->meta_value ) {
-							if ( $verbose ) {
-								// phpcs:ignore
-								WP_CLI::log( print_r( [
-									'original' => $extant_meta[0],
-									'potential_dupe' => $meta,
-									'equal?' => ( $meta->meta_value === $extant_meta[0]->meta_value ) ? 'yes' : 'no',
-								], true ) );
-							}
 							if ( $dry_run ) {
 								WP_CLI::log( "Would delete {$meta_key} meta {$meta->meta_id} (Value '{$meta->meta_value}') for {$post_type} {$post->ID}" );
 							} else {
