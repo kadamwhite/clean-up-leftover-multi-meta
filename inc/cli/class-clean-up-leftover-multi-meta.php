@@ -69,7 +69,7 @@ class Clean_Up_Leftover_Multi_Meta extends WP_CLI_Command {
 					}
 					$extant_meta = $wpdb->get_results(
 						$wpdb->prepare(
-							'select meta_id,meta_value,meta_key from wp_postmeta where meta_key=%s and post_id=%d',
+							"select meta_id,meta_value,meta_key from {$wpdb->postmeta} where meta_key=%s and post_id=%d",
 							$meta_key,
 							$post->ID
 						)
@@ -79,30 +79,28 @@ class Clean_Up_Leftover_Multi_Meta extends WP_CLI_Command {
 					}
 					if ( $verbose ) {
 						WP_CLI::log( "Processing $post_type id {$post->ID} $meta_key" );
-					}
-					if ( $verbose ) {
+
 						// phpcs:ignore
 						Utils\format_items( 'table', $extant_meta, 'meta_id,meta_value,meta_key' );
 					}
 					foreach ( array_slice( $extant_meta, 1 ) as $idx => $meta ) {
-						if ( $meta->meta_value === $extant_meta[0]->meta_value ) {
-							if ( $dry_run ) {
-								WP_CLI::log( "Would delete {$meta_key} meta {$meta->meta_id} (Value '{$meta->meta_value}') for {$post_type} {$post->ID}" );
-							} else {
-								WP_CLI::log( "Deleting {$meta_key} meta {$meta->meta_id} (Value '{$meta->meta_value}') for {$post_type} {$post->ID}" );
-								$rows_affected = $wpdb->query(
-									$wpdb->prepare(
-										'delete from wp_postmeta where meta_id=%d',
-										$meta->meta_id
-									)
-								);
-								if ( 0 < $rows_affected ) {
-									WP_CLI::success( "Deleted {$meta_key} meta {$meta->meta_id} (same as {$meta_key} meta {$extant_meta[0]->meta_id}) for {$post_type} {$post->ID}" );
-								} elseif ( 0 === $rows_affected ) {
-									WP_CLI::warning( "No rows affected when trying to delete {$meta->meta_id} for {$post_type} {$post->ID}" );
-								} elseif ( false === $rows_affected ) {
-									WP_CLI::error( "Errors encountered when trying to delete {$meta->meta_id} for {$post_type} {$post->ID}" );
-								}
+						if ( $verbose ) {
+							WP_CLI::log( sprintf( 'Discarding row with ID %d as a duplicate', $meta->meta_id ) );
+						}
+						if ( $dry_run ) {
+							WP_CLI::log( "Would delete {$meta_key} meta {$meta->meta_id} (Value '{$meta->meta_value}') for {$post_type} {$post->ID}" );
+						} else {
+							WP_CLI::log( "Deleting {$meta_key} meta {$meta->meta_id} (Value '{$meta->meta_value}') for {$post_type} {$post->ID}" );
+							$rows_affected = $wpdb->delete(
+								$wpdb->postmeta,
+								[ 'meta_id' => $meta->meta_id ]
+							);
+							if ( 0 < $rows_affected ) {
+								WP_CLI::success( "Deleted {$meta_key} meta {$meta->meta_id} (same as {$meta_key} meta {$extant_meta[0]->meta_id}) for {$post_type} {$post->ID}" );
+							} elseif ( 0 === $rows_affected ) {
+								WP_CLI::warning( "No rows affected when trying to delete {$meta->meta_id} for {$post_type} {$post->ID}" );
+							} elseif ( false === $rows_affected ) {
+								WP_CLI::error( "Errors encountered when trying to delete {$meta->meta_id} for {$post_type} {$post->ID}" );
 							}
 						}
 					}
