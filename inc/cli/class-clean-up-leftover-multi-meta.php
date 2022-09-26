@@ -106,5 +106,8 @@ class Clean_Up_Leftover_Multi_Meta extends WP_CLI_Command {
 				}
 			}
 		);
+
+		WP_CLI::log( 'Flushing the object cache.' );
+		wp_cache_flush();
 	}
 }
