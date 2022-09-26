@@ -41,13 +41,6 @@ class Clean_Up_Leftover_Multi_Meta extends WP_CLI_Command {
 
 		WP_CLI::log( "Analyzing meta for $post_type" );
 
-		$results = [
-			'total'   => 0,
-			'errored' => [],
-			'updated' => [],
-			'success' => [],
-		];
-
 		$registered_meta = array_merge(
 			get_registered_meta_keys( 'post', $post_type ),
 			get_registered_meta_keys( 'post', '' )
@@ -61,9 +54,8 @@ class Clean_Up_Leftover_Multi_Meta extends WP_CLI_Command {
 			[
 				'post_type'   => $post_type,
 			],
-			function( WP_Post $post ) use ( &$results, $registered_meta, $post_type, $dry_run, $verbose ) {
+			function( WP_Post $post ) use ( $registered_meta, $post_type, $dry_run, $verbose ) {
 				global $wpdb;
-				$results['total'] += 1;
 
 				foreach ( $registered_meta as $meta_key => $meta_registration ) {
 					if ( $verbose ) {
