@@ -71,8 +71,9 @@ class Clean_Up_Leftover_Multi_Meta extends WP_CLI_Command {
 					}
 					$extant_meta = $wpdb->get_results(
 						$wpdb->prepare(
-							'select meta_id,meta_value,meta_key from wp_postmeta where meta_key=%s',
-							$meta_key
+							'select meta_id,meta_value,meta_key from wp_postmeta where meta_key=%s and post_id=%d',
+							$meta_key,
+							$post->ID
 						)
 					);
 					if ( count( $extant_meta ) <= 1 ) {
@@ -93,9 +94,9 @@ class Clean_Up_Leftover_Multi_Meta extends WP_CLI_Command {
 								], true ) );
 							}
 							if ( $dry_run ) {
-								WP_CLI::log( "Would delete {$meta_key} meta {$meta->meta_id} (Value {$meta->meta_value}) for {$post_type} {$post->ID}" );
+								WP_CLI::log( "Would delete {$meta_key} meta {$meta->meta_id} (Value '{$meta->meta_value}') for {$post_type} {$post->ID}" );
 							} else {
-								WP_CLI::log( "Deleting {$meta_key} meta {$meta->meta_id} (Value {$meta->meta_value}) for {$post_type} {$post->ID}" );
+								WP_CLI::log( "Deleting {$meta_key} meta {$meta->meta_id} (Value '{$meta->meta_value}') for {$post_type} {$post->ID}" );
 								$rows_affected = $wpdb->query(
 									$wpdb->prepare(
 										'delete from wp_postmeta where meta_id=%d',
