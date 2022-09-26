@@ -48,7 +48,16 @@ class Clean_Up_Leftover_Multi_Meta extends WP_CLI_Command {
 		);
 		if ( $verbose ) {
 			// phpcs:ignore
-			WP_CLI::log( "Registered meta keys for $post_type: " . print_r( array_keys( $registered_meta ), true ) );
+			WP_CLI::log( "Registered meta keys for $post_type:" );
+			$meta_to_log = [];
+			foreach ( $registered_meta as $meta_key => $meta_registration ) {
+				$meta_to_log[] = [
+					'key'          => $meta_key,
+					'single'       => $meta_registration['single'],
+					'show_in_rest' => $meta_registration['show_in_rest'],
+				];
+			}
+			Utils\format_items( 'table', $meta_to_log, 'key,single,show_in_rest' );
 		}
 
 		$query_args = [
