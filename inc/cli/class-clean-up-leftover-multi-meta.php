@@ -73,9 +73,6 @@ class Clean_Up_Leftover_Multi_Meta extends WP_CLI_Command {
 					if ( ( $meta_registration['single'] ?? true ) === false ) {
 						continue;
 					}
-					if ( ( $meta_registration['show_in_rest'] ?? true ) === false ) {
-						continue;
-					}
 
 					$extant_meta = $wpdb->get_results(
 						$wpdb->prepare(
